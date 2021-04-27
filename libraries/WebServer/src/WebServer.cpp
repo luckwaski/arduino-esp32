@@ -41,7 +41,7 @@ static const char Content_Length[] = "Content-Length";
 WebServer::WebServer(IPAddress addr, int port)
 : _corsEnabled(false)
 , _server(addr, port)
-, _currentMethod(HTTP_ANY)
+, _currentMethod(WS_HTTP_ANY)
 , _currentVersion(0)
 , _currentStatus(HC_NONE)
 , _statusChange(0)
@@ -62,7 +62,7 @@ WebServer::WebServer(IPAddress addr, int port)
 WebServer::WebServer(int port)
 : _corsEnabled(false)
 , _server(port)
-, _currentMethod(HTTP_ANY)
+, _currentMethod(WS_HTTP_ANY)
 , _currentVersion(0)
 , _currentStatus(HC_NONE)
 , _statusChange(0)
@@ -190,13 +190,13 @@ bool WebServer::authenticate(const char * username, const char * password){
       String _H1 = md5str(String(username) + ':' + _realm + ':' + String(password));
       log_v("Hash of user:realm:pass=%s", _H1.c_str());
       String _H2 = "";
-      if(_currentMethod == HTTP_GET){
+      if(_currentMethod == WS_HTTP_GET){
           _H2 = md5str(String(F("GET:")) + _uri);
-      }else if(_currentMethod == HTTP_POST){
+      }else if(_currentMethod == WS_HTTP_POST){
           _H2 = md5str(String(F("POST:")) + _uri);
-      }else if(_currentMethod == HTTP_PUT){
+      }else if(_currentMethod == WS_HTTP_PUT){
           _H2 = md5str(String(F("PUT:")) + _uri);
-      }else if(_currentMethod == HTTP_DELETE){
+      }else if(_currentMethod == WS_HTTP_DELETE){
           _H2 = md5str(String(F("DELETE:")) + _uri);
       }else{
           _H2 = md5str(String(F("GET:")) + _uri);
@@ -246,7 +246,7 @@ void WebServer::requestAuthentication(HTTPAuthMethod mode, const char* realm, co
 }
 
 void WebServer::on(const Uri &uri, WebServer::THandlerFunction handler) {
-  on(uri, HTTP_ANY, handler);
+  on(uri, WS_HTTP_ANY, handler);
 }
 
 void WebServer::on(const Uri &uri, HTTPMethod method, WebServer::THandlerFunction fn) {
